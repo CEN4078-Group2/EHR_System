@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <string.h>
+#include "patient.h"
+#include "vector.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+
+
+int passwordCheck(char* password);
+
+
+int main(void)
+{
+	printf("%i", getgid());
+	printf("%i", getuid());
+	printf("%i", geteuid());
+
+	
+
+
+	FILE *patW;
+	if((patW = fopen("patients.txt", "a+")) == NULL)
+	{
+		printf("File not found, exiting.");
+		exit(1);
+	}
+	
+	
+	
+	if(seteuid(1000) == -1)
+	{
+		printf("whoa now1!");
+		exit(1);
+	}
+	////my change
+	printf("%i", getgid());
+	printf("%i", getuid());
+	printf("%i", geteuid());
+	
+	if(seteuid(0) == -1)
+	{
+		printf("whoa now1!");
+		exit(1);
+	}
+	
+	printf("%i", getgid());
+	printf("%i", getuid());
+	printf("%i", geteuid());
+
+	/*fputs("\nwhat", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fputs("what", patW);
+	fflush(patW);*/
+	
+	
+	//char userID[128];
+	//char password[128];
+
+	/*while(1)
+	{
+		printf("Enter User ID: ");
+		fgets(userID, sizeof(userID), stdin);
+		printf("Enter password: ");
+		fgets(password, sizeof(password), stdin);
+		passwordCheck(password);
+		
+	}*/
+		
+}
+
+int inputValidation(int userID, char* myString)
+{
+    
+    	for(size_t i = 0; myString[i] != '\0'; ++i) {
+        if(! (isdigit(myString[i]) || '.' == myString[i]) ) {
+            printf("The string has characters that are not numbers or period!");
+            return -1;
+        }
+    	}
+ 
+	if(!(isdigit(userID)))
+	{
+
+	}
+    printf("The string has only numbers and '.'!");
+    return 0;
+}

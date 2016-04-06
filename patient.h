@@ -1,4 +1,3 @@
-#include "stdbool.h"
 #include "stdlib.h"
 #include <stdio.h>
 #include <string.h>
@@ -21,5 +20,5 @@ typedef struct patient
 	char birthDate[50];
 	int patientID;
 	int role;
-	bool deleted;	 
+	int deleted;	 
 }patientRecord;

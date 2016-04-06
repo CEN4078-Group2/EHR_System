@@ -2,16 +2,16 @@
 #include "patient.h"
 
 
-void printLogon(int userID,char* password, patientRecord* patientLookUp);
-void roleChoice(int userID, char* password, patientRecord* patientLookUp);
-void roleAdmin(void);
-void roleDoctor(void);
-void roleNurse(void);
+void printLogon(char* tempID,char* password, patientRecord* patientLookUp, size_t len);
+void roleChoice(int userID, patientRecord* patientLookUp);
+void roleAdmin(char* tempID, size_t len);
+void roleDoctor(char* tempID, size_t len);
+void roleNurse(char* tempID, size_t len);
 void rolePatient(void);
-void createNewPatient();
-void fileRead(patientRecord *patientLookUp);
+void createNewPatient(void);
+void fileRead(patientRecord *patientLookUp, size_t len);
 void fileWrite(patientRecord *writeuser);
-void userFillNew(patientRecord *writeUser);
+void userFillNew(patientRecord *writeUser, size_t len);
 void fReader(patientRecord *readUser, FILE *patientFile);
 void fWriter(patientRecord *writeUser, FILE *patientFile);
 int inputValidation(int userID, char* myString);

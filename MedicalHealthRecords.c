@@ -1,52 +1,93 @@
 #include <stdio.h>
 #include "userInterface.h"
+#include <errno.h>
+#include <unistd.h>
 
+/*The main function calls all interface functions and provides the logic that determines what role recieves
+what options.*/
 int main(void){
-	
+	int selectChoice = 0;
+	char *ptr;
+	FILE *patientFile;
+	if((patientFile = fopen("patients.bin", "a+b")) == NULL){
+		printf("File not found, exiting.");
+		exit(1);
+	}
+	if(fseek(patientFile, 0L, SEEK_END) == -1){
+		printf("Seek operation failed.");
+		exit(1);
+	}
+	const size_t fileSize = ftell(patientFile);
+	fclose(patientFile);
+	deEscalatePrivilege();
 	char* tempUserID = (char*)malloc(sizeof(char) * 100);
 	if(tempUserID == NULL){
 		printf("Unable to allocate memory.");
 		exit(1);
 	}
-	memset(tempUserID, 0, sizeof(char));
+	memset(tempUserID, 0, sizeof(char)*100);
+	char* tempChoice = (char*)malloc(sizeof(char) * 100);
+	if(tempChoice == NULL){
+		printf("Unable to allocate memory.");
+		exit(1);
+	}
+	memset(tempChoice, 0, sizeof(char)*100);
 	char* tempUserPassword = (char*)malloc(sizeof(char) * 100);
 	if(tempUserPassword == NULL){
 		printf("Unable to allocate memory.");
 		exit(1);
 	}
-	memset(tempUserPassword, 0, sizeof(char));
-	patientRecord* logonUser = (patientRecord*)malloc(sizeof(patientRecord));
-	if(logonUser == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
+	if(fileSize == false){
+		printf("There are no users currently saved, displaying admin role.\n");
+		roleAdmin(tempUserID, sizeof(char) * 100);
 	}
+	memset(tempUserPassword, 0, sizeof(char) * 100);
+	patientRecord logonUserStruct;
+	patientRecord *logonUser = &logonUserStruct;
 	memset(logonUser, 0, sizeof(patientRecord));
-	printLogon(tempUserID, tempUserPassword , logonUser, sizeof(*tempUserID));
-
-	switch(logonUser->role){
-      		case 1 :
-			printf("\nWelcome Admin.\n\n");
-			roleAdmin(tempUserID, sizeof(*tempUserID));
-			break;
-      		case 2 :
-			printf("\nWelcome Doctor.\n\n");
-			roleDoctor(tempUserID, sizeof(*tempUserID));
-			break;
-      		case 3 :
-			printf("\nWelcome Nurse.\n\n");
-			roleNurse(tempUserID, sizeof(*tempUserID));
-			break;
-		case 4 :
-			break;
-		default :
-         		printf("This user has an invalid role.\n" );
-			break;
-
-	}
-	free(tempUserID);
-	tempUserID = NULL;
-	free(tempUserPassword);
-	tempUserPassword = NULL;
-	free(logonUser);
-	logonUser = NULL;
+	while(1){
+		printf("\nWould you like to sign in or exit?\n");
+		printf("1. Sign in.\n");
+		printf("2. Exit.\n");
+		printf("Enter 1 or 2: ");
+		if(fgets(tempChoice, 3, stdin) == NULL){
+			selectChoice = 0;
+		}else if (ERANGE == errno) {
+  			if(puts("Number out of range, try again.\n") == EOF) {
+				selectChoice = 0; 
+  			}
+		}else{
+			selectChoice = strtol(tempChoice,&ptr,10);
+		}
+		
+		if(selectChoice == 1){
+			printLogon(tempUserID, tempUserPassword , logonUser, sizeof(char) * 100);
+			switch(logonUser->role){
+      				case 1:
+					printf("\nWelcome Admin.\n\n");
+					roleAdmin(tempUserID, sizeof(char) * 100);
+					break;
+      				case 2 :
+					printf("\nWelcome Doctor.\n\n");
+					roleDoctor(tempUserID, sizeof(char) * 100);
+					break;
+      				case 3 :
+					printf("\nWelcome Nurse.\n\n");
+					roleNurse(tempUserID, sizeof(char) * 100);
+					break;
+				case 4 :
+					printf("\nWelcome Patient.\n\n");
+					rolePatient(tempUserID, sizeof(char) * 100, logonUser);
+					break;
+				default :
+        				printf("This user has an invalid role.\n" );
+					break;
+			}
+		}else if(selectChoice == 2){
+			printf("Goodbye!");
+			exit(0);
+		}else{
+			printf("Inproper input, try again.");
+		}	
+	}	
 }

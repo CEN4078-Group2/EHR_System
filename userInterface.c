@@ -87,137 +87,162 @@ void roleDoctor(char* tempID, size_t len){
 			memset(tempUserDoc->CPOE, 0, sizeof(tempUserDoc->CPOE));
 			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->CPOE, buffer, sizeof(tempUserDoc->CPOE));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
       		case 2 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter drug interaction check: ");
 			memset(tempUserDoc->drugInteraction, 0, sizeof(tempUserDoc->drugInteraction));
-			if(fgets(buffer, sizeof(tempUserDoc->drugInteraction),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->drugInteraction, buffer, sizeof(tempUserDoc->drugInteraction));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
       		case 3 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter patient history: ");
 			memset(tempUserDoc->fastPatHist, 0, sizeof(tempUserDoc->fastPatHist));
-			if(fgets(buffer, sizeof(tempUserDoc->fastPatHist),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->fastPatHist, buffer, sizeof(tempUserDoc->fastPatHist));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 4 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter E-Prescription: ");
 			memset(tempUserDoc->ePrescription, 0, sizeof(tempUserDoc->ePrescription));
-			if(fgets(buffer, sizeof(tempUserDoc->ePrescription),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->ePrescription, buffer, sizeof(tempUserDoc->ePrescription));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 5 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->activeMedList));
 			printf("Enter active medications: ");
 			memset(tempUserDoc->activeMedList, 0, sizeof(tempUserDoc->activeMedList));
-			if(fgets(buffer, sizeof(tempUserDoc->activeMedList),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->activeMedList, buffer, sizeof(tempUserDoc->activeMedList));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 6 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter medication allergy list: ");
 			memset(tempUserDoc->medAllergyList, 0, sizeof(tempUserDoc->medAllergyList));
-			if(fgets(buffer, sizeof(tempUserDoc->medAllergyList),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->medAllergyList, buffer, sizeof(tempUserDoc->medAllergyList));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 7 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter Demographics for: %s", tempUserDoc->name);
 			printf("Address: \n");
 			memset(tempUserDoc->address, 0, sizeof(tempUserDoc->address));
-			if(fgets(buffer, sizeof(tempUserDoc->address),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->address, buffer, sizeof(tempUserDoc->address));
 			printf("Sex: \n");
 			memset(tempUserDoc->sex, 0, sizeof(tempUserDoc->sex));
-			if(fgets(buffer, sizeof(tempUserDoc->sex),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 9,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->sex, buffer, sizeof(tempUserDoc->sex));
 			printf("Insurance: \n");
 			memset(tempUserDoc->insurance, 0, sizeof(tempUserDoc->insurance));
-			if(fgets(buffer, sizeof(tempUserDoc->insurance),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->insurance, buffer, sizeof(tempUserDoc->insurance));
 			printf("Date of birth: \n");
 			memset(tempUserDoc->birthDate, 0, sizeof(tempUserDoc->birthDate));
-			if(fgets(buffer, sizeof(tempUserDoc->birthDate),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->birthDate, buffer, sizeof(tempUserDoc->birthDate));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 8 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->vitalSigns));
 			printf("Enter vital signs: ");
 			memset(tempUserDoc->vitalSigns, 0, sizeof(tempUserDoc->vitalSigns));
-			if(fgets(buffer, sizeof(tempUserDoc->vitalSigns),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->vitalSigns, buffer, sizeof(tempUserDoc->vitalSigns));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 9 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter smoking status: ");
 			memset(tempUserDoc->smokingStatus, 0, sizeof(tempUserDoc->smokingStatus));
-			if(fgets(buffer, sizeof(tempUserDoc->smokingStatus),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->smokingStatus, buffer, sizeof(tempUserDoc->smokingStatus));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 10 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->reminders));
 			printf("Enter reminders: ");
 			memset(tempUserDoc->reminders, 0, sizeof(tempUserDoc->reminders));
-			if(fgets(buffer, sizeof(tempUserDoc->reminders),stdin) == NULL){
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserDoc->reminders, buffer, sizeof(tempUserDoc->reminders));
 			fileWrite(tempUserDoc);
+			while ( (getchar()) != '\n');
 			break;
 		case 11 :
          		loopBreakOne = true;
+         		while ( (getchar()) != '\n');
          		break;
      		default :
          		printf("Invalid Option, try again.\n" );
+         		while ( (getchar()) != '\n');
 			break;
    		}
 		if(loopBreakOne == true){
@@ -255,12 +280,14 @@ void roleAdmin(char* tempID, size_t len){
 		switch(selectChoiceAdmin){
       		case 1 :
          		createNewPatient();
+         		while ( (getchar()) != '\n');
          		break;
       		case 2 :
 			fileRead(tempUserAdmin, sizeof(tempUserAdmin->name));
 			tempUserAdmin->deleted = true;
 			fileWrite(tempUserAdmin);
 			printf("User deleted.");
+			while ( (getchar()) != '\n');
 			break;
       		case 3 :
          		fileRead(tempUserAdmin, sizeof(tempUserAdmin->name));
@@ -270,13 +297,16 @@ void roleAdmin(char* tempID, size_t len){
 			printf("Password: %s", tempUserAdmin->password);
 			printf("Role: %d\n", tempUserAdmin->role);
 			userFillNew(tempUserAdmin, sizeof(tempUserAdmin->name));
-			fileWrite(tempUserAdmin);	
+			fileWrite(tempUserAdmin);
+			while ( (getchar()) != '\n');	
          		break;
          	case 4 :
          		loopBreakOne = true;
+         		while ( (getchar()) != '\n');
          		break;
       		default:
          		printf("Invalid Option, try again.\n" );
+         		while ( (getchar()) != '\n');
 			break;
    		}
 		if(loopBreakOne == true){
@@ -317,12 +347,12 @@ void roleNurse(char* tempID, size_t len){
 				printf("File not found, exiting.");
 				exit(1);
 			}
-			while(!feof(patientFile)){
+			do{
 				fReader(tempUserNurse, patientFile);
 				if(tempUserNurse->role == 4){
 					printf("Name: %s", tempUserNurse->name);
 				}
-			}
+			}while(!feof(patientFile));
 			fclose(patientFile);
 			deEscalatePrivilege();
          		break;
@@ -332,10 +362,12 @@ void roleNurse(char* tempID, size_t len){
 			memset(tempUserNurse->vitalSigns, 0, sizeof(tempUserNurse->vitalSigns));
 			if(fgets(buffer, sizeof(tempUserNurse->vitalSigns),stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserNurse->vitalSigns, buffer, sizeof(tempUserNurse->vitalSigns));
 			fileWrite(tempUserNurse);
+			while ( (getchar()) != '\n');
 			break;
       		case 3 :
       			fileRead(tempUserNurse, sizeof(tempUserNurse->reminders));
@@ -343,16 +375,20 @@ void roleNurse(char* tempID, size_t len){
 			memset(tempUserNurse->reminders, 0, sizeof(tempUserNurse->reminders));
 			if(fgets(buffer, sizeof(tempUserNurse->reminders),stdin) == NULL){
 				printf("Input is invalid");
+				while ( (getchar()) != '\n');
 				break;
 			}
 			strncpy(tempUserNurse->reminders, buffer, sizeof(tempUserNurse->reminders));
 			fileWrite(tempUserNurse);
+			while ( (getchar()) != '\n');
 			break;
          	case 4 :
          		loopBreakOne = true;
+         		while ( (getchar()) != '\n');
          		break;
       		default :
          		printf("Invalid Option, try again.\n" );
+         		while ( (getchar()) != '\n');
 			break;
    		}
 		if(loopBreakOne == true){
@@ -396,12 +432,15 @@ void rolePatient(char* tempID, size_t len, patientRecord* logonUser){
 				printf("\nActive Medications: %s", logonUser->activeMedList);
 				printf("\nMedicinal Allergies: %s", logonUser->medAllergyList);
 				printf("\nDrug Interactions: %s\n", logonUser->drugInteraction);
+				while ( (getchar()) != '\n');
 				break;
 			case 2 :
 				loopBreakOne = true;
+				while ( (getchar()) != '\n');
          			break;
       			default:
          			printf("Invalid Option, try again.\n" );
+         			while ( (getchar()) != '\n');
 				break;
    		}
 		if(loopBreakOne == true){

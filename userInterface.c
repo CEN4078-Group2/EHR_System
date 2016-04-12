@@ -3,11 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <unistd.h>
 #include "userInterface.h"
 
-#define true 1
-#define false 0
 
+/*This function prompts the user for their user ID and password. It validates the input of the password then fetches the user data from the file. If the password doesn't match it prompts the user to enter their credentials again.*/
 void printLogon(char* tempID, char* password, patientRecord* patientLookUp, size_t len){
 	int roleBool = false;
 	int userID = 0;
@@ -47,19 +47,16 @@ void printLogon(char* tempID, char* password, patientRecord* patientLookUp, size
 	}while(roleBool);
 }
 
+/*This function displays the options for the doctor role. It fetches the user data from the file and depending on what choice is made will memset a particular value before taking the new one from the user.*/
 void roleDoctor(char* tempID, size_t len){
 	int loopBreakOne = false;
 	char *ptr;
+	char buffer[100];
 	unsigned int selectChoiceDoc = 0;
-	patientRecord* tempUserDoc = (patientRecord*)malloc(sizeof(patientRecord));
-	if(tempUserDoc == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
-	}
+	patientRecord tempUserDocStruct;
+	patientRecord *tempUserDoc = &tempUserDocStruct;
 	memset(tempUserDoc, 0, sizeof(patientRecord));
 	while(true){
-		
-		
 		printf("1. Computerized physician order entry(CPOE).\n");
 		printf("2. Drug interaction check.\n");
 		printf("3. Fast overview of patient history.\n");
@@ -69,7 +66,10 @@ void roleDoctor(char* tempID, size_t len){
 		printf("7. Demographics.\n");
 		printf("8. Vital Signs.\n");
 		printf("9. Smoking status.\n");
+		printf("10. Reminders.\n");
+		printf("11. Logout.\n");
 		printf("Enter the number of the option desired: ");
+		memset(tempID, 0, sizeof(char)*100);
 		if(fgets(tempID, len, stdin) == NULL){
 			selectChoiceDoc = 0;
 		}else if (ERANGE == errno) {
@@ -84,112 +84,162 @@ void roleDoctor(char* tempID, size_t len){
       		case 1 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter CPOE: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->CPOE, 0, sizeof(tempUserDoc->CPOE));
+			if(fgets(buffer, sizeof(char) * 99,stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->CPOE, buffer, sizeof(tempUserDoc->CPOE));
 			fileWrite(tempUserDoc);
 			break;
       		case 2 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter drug interaction check: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->drugInteraction, 0, sizeof(tempUserDoc->drugInteraction));
+			if(fgets(buffer, sizeof(tempUserDoc->drugInteraction),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->drugInteraction, buffer, sizeof(tempUserDoc->drugInteraction));
 			fileWrite(tempUserDoc);
 			break;
       		case 3 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter patient history: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->fastPatHist, 0, sizeof(tempUserDoc->fastPatHist));
+			if(fgets(buffer, sizeof(tempUserDoc->fastPatHist),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->fastPatHist, buffer, sizeof(tempUserDoc->fastPatHist));
 			fileWrite(tempUserDoc);
 			break;
 		case 4 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter E-Prescription: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->ePrescription, 0, sizeof(tempUserDoc->ePrescription));
+			if(fgets(buffer, sizeof(tempUserDoc->ePrescription),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->ePrescription, buffer, sizeof(tempUserDoc->ePrescription));
 			fileWrite(tempUserDoc);
 			break;
 		case 5 :
-			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
-			printf("Enter avtive medications: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			fileRead(tempUserDoc, sizeof(tempUserDoc->activeMedList));
+			printf("Enter active medications: ");
+			memset(tempUserDoc->activeMedList, 0, sizeof(tempUserDoc->activeMedList));
+			if(fgets(buffer, sizeof(tempUserDoc->activeMedList),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->activeMedList, buffer, sizeof(tempUserDoc->activeMedList));
 			fileWrite(tempUserDoc);
 			break;
 		case 6 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter medication allergy list: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->medAllergyList, 0, sizeof(tempUserDoc->medAllergyList));
+			if(fgets(buffer, sizeof(tempUserDoc->medAllergyList),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->medAllergyList, buffer, sizeof(tempUserDoc->medAllergyList));
 			fileWrite(tempUserDoc);
 			break;
 		case 7 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
-			printf("Enter Demographics for- \n");
-			printf("address: \n");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			printf("Enter Demographics for: %s", tempUserDoc->name);
+			printf("Address: \n");
+			memset(tempUserDoc->address, 0, sizeof(tempUserDoc->address));
+			if(fgets(buffer, sizeof(tempUserDoc->address),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->address, buffer, sizeof(tempUserDoc->address));
+			printf("Sex: \n");
+			memset(tempUserDoc->sex, 0, sizeof(tempUserDoc->sex));
+			if(fgets(buffer, sizeof(tempUserDoc->sex),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserDoc->sex, buffer, sizeof(tempUserDoc->sex));
+			printf("Insurance: \n");
+			memset(tempUserDoc->insurance, 0, sizeof(tempUserDoc->insurance));
+			if(fgets(buffer, sizeof(tempUserDoc->insurance),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserDoc->insurance, buffer, sizeof(tempUserDoc->insurance));
+			printf("Date of birth: \n");
+			memset(tempUserDoc->birthDate, 0, sizeof(tempUserDoc->birthDate));
+			if(fgets(buffer, sizeof(tempUserDoc->birthDate),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserDoc->birthDate, buffer, sizeof(tempUserDoc->birthDate));
 			fileWrite(tempUserDoc);
 			break;
 		case 8 :
-			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
+			fileRead(tempUserDoc, sizeof(tempUserDoc->vitalSigns));
 			printf("Enter vital signs: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->vitalSigns, 0, sizeof(tempUserDoc->vitalSigns));
+			if(fgets(buffer, sizeof(tempUserDoc->vitalSigns),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->vitalSigns, buffer, sizeof(tempUserDoc->vitalSigns));
 			fileWrite(tempUserDoc);
 			break;
 		case 9 :
 			fileRead(tempUserDoc, sizeof(tempUserDoc->name));
 			printf("Enter smoking status: ");
-			if(fgets(tempUserDoc->CPOE, sizeof(tempUserDoc->CPOE),stdin) == NULL){
+			memset(tempUserDoc->smokingStatus, 0, sizeof(tempUserDoc->smokingStatus));
+			if(fgets(buffer, sizeof(tempUserDoc->smokingStatus),stdin) == NULL){
 				printf("Input is invalid");
 				break;
 			}
+			strncpy(tempUserDoc->smokingStatus, buffer, sizeof(tempUserDoc->smokingStatus));
 			fileWrite(tempUserDoc);
 			break;
+		case 10 :
+			fileRead(tempUserDoc, sizeof(tempUserDoc->reminders));
+			printf("Enter reminders: ");
+			memset(tempUserDoc->reminders, 0, sizeof(tempUserDoc->reminders));
+			if(fgets(buffer, sizeof(tempUserDoc->reminders),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserDoc->reminders, buffer, sizeof(tempUserDoc->reminders));
+			fileWrite(tempUserDoc);
+			break;
+		case 11 :
+         		loopBreakOne = true;
+         		break;
      		default :
-         	printf("Invalid Option, try again.\n" );
-		loopBreakOne = true;
-		break;
+         		printf("Invalid Option, try again.\n" );
+			break;
    		}
 		if(loopBreakOne == true){
 			break;
 		}
 	}
-	free(tempUserDoc);
 }
 
+/*This function displays the admin role. It fetches the user data from the file and allows the current user to delete the desired user or changed basic administrative data.*/
 void roleAdmin(char* tempID, size_t len){
 	int loopBreakOne = false;
 	unsigned int selectChoiceAdmin = 0;
 	char *ptr;
-	patientRecord* tempUserAdmin = (patientRecord*)malloc(sizeof(patientRecord));
-	if(tempUserAdmin == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
-	}
+	patientRecord tempUserAdminStruct;
+	patientRecord *tempUserAdmin = &tempUserAdminStruct;
 	memset(tempUserAdmin, 0, sizeof(patientRecord));
 	while(true){
 
 		printf("1. Enter a new user.\n");
 		printf("2. Delete a current user.\n");
 		printf("3. Edit a current user.\n");
+		printf("4. Logout.\n");
 		printf("Enter the number of the option desired: ");
 		if(fgets(tempID, len, stdin) == NULL){
 			selectChoiceAdmin = 0;
@@ -222,27 +272,28 @@ void roleAdmin(char* tempID, size_t len){
 			userFillNew(tempUserAdmin, sizeof(tempUserAdmin->name));
 			fileWrite(tempUserAdmin);	
          		break;
-      		default :
-         	printf("Invalid Option, try again.\n" );
-		loopBreakOne = true;
-		break;
+         	case 4 :
+         		loopBreakOne = true;
+         		break;
+      		default:
+         		printf("Invalid Option, try again.\n" );
+			break;
    		}
 		if(loopBreakOne == true){
 			break;
 		}
 	}
-	free(tempUserAdmin);
 }
 
+/*This function displays the nurse role options. It fetches the user data from the file and allows the current user to view patient lists and edit vital signs as well as update reminders.*/
 void roleNurse(char* tempID, size_t len){
-	int loopBreakOne = true;
+	FILE *patientFile;
+	int loopBreakOne = false;
 	unsigned int selectChoiceNurse = 0;
 	char *ptr;
-	patientRecord* tempUserNurse = (patientRecord*)malloc(sizeof(patientRecord));
-	if(tempUserNurse == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
-	}
+	char buffer[100];
+	patientRecord tempUserNurseStruct;
+	patientRecord *tempUserNurse = &tempUserNurseStruct;
 	memset(tempUserNurse, 0, sizeof(patientRecord));
 	while(true){
 		printf("1. View patient list.\n");
@@ -259,13 +310,13 @@ void roleNurse(char* tempID, size_t len){
 			selectChoiceNurse = strtol(tempID,&ptr,10);
 		}
 
-		FILE *patientFile;
-			if((patientFile = fopen("patients.bin", "rb")) == NULL){
+		switch(selectChoiceNurse){
+      		case 1 :
+      			privilegeEscalate();		
+			if((patientFile = fopen("patients.bin", "r+b")) == NULL){
 				printf("File not found, exiting.");
 				exit(1);
 			}
-		switch(selectChoiceNurse){
-      		case 1 :
 			while(!feof(patientFile)){
 				fReader(tempUserNurse, patientFile);
 				if(tempUserNurse->role == 4){
@@ -273,48 +324,103 @@ void roleNurse(char* tempID, size_t len){
 				}
 			}
 			fclose(patientFile);
+			deEscalatePrivilege();
          		break;
       		case 2 :
+			fileRead(tempUserNurse, sizeof(tempUserNurse->vitalSigns));
+			printf("Enter vital signs: ");
+			memset(tempUserNurse->vitalSigns, 0, sizeof(tempUserNurse->vitalSigns));
+			if(fgets(buffer, sizeof(tempUserNurse->vitalSigns),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserNurse->vitalSigns, buffer, sizeof(tempUserNurse->vitalSigns));
+			fileWrite(tempUserNurse);
 			break;
-      		case 3 :	
+      		case 3 :
+      			fileRead(tempUserNurse, sizeof(tempUserNurse->reminders));
+			printf("Enter reminders: ");
+			memset(tempUserNurse->reminders, 0, sizeof(tempUserNurse->reminders));
+			if(fgets(buffer, sizeof(tempUserNurse->reminders),stdin) == NULL){
+				printf("Input is invalid");
+				break;
+			}
+			strncpy(tempUserNurse->reminders, buffer, sizeof(tempUserNurse->reminders));
+			fileWrite(tempUserNurse);
+			break;
+         	case 4 :
+         		loopBreakOne = true;
          		break;
       		default :
-         	printf("Invalid Option, try again.\n" );
-		loopBreakOne = true;
-		break;
+         		printf("Invalid Option, try again.\n" );
+			break;
    		}
 		if(loopBreakOne == true){
 			break;
 		}
 	}
-	free(tempUserNurse);
 }
 
-void createNewPatient(void){	
-	FILE *patientFile;
-	if((patientFile = fopen("patients.bin", "a+b")) == NULL){
-		printf("File not found, exiting.");
-		exit(1);
-	}	
-	patientRecord* writeUser = (patientRecord*)malloc(sizeof(patientRecord));
-	if(writeUser == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
+/*This function displays the patient role options. It fetches the data of the current user and allows them to view 
+their medical information.*/
+void rolePatient(char* tempID, size_t len, patientRecord* logonUser){
+	int loopBreakOne = false;
+	unsigned int selectChoicePatient = 0;
+	char *ptr;
+	while(true){
+		printf("1. View Patient Info.\n");
+		printf("2. Logout.\n");
+		printf("Enter the number of the option desired: ");		
+		if(fgets(tempID, len, stdin) == NULL){
+			selectChoicePatient = 0;
+		}else if (ERANGE == errno) {
+  			if(puts("Number out of range, try again.\n") == EOF) {
+				selectChoicePatient = 0; 
+  			}
+		}else{
+			selectChoicePatient = strtol(tempID,&ptr,10);
+		}
+		switch(selectChoicePatient){
+      			case 1  :
+				printf("\nName: %s", logonUser->name);
+				printf("\nPatient ID: %d", logonUser->patientID);
+				printf("\nDOB: %s", logonUser->birthDate);
+				printf("\nAddress: %s", logonUser->address);
+				printf("\nInsurance: %s", logonUser->insurance);
+				printf("\nSex: %s", logonUser->sex);
+				printf("\nReminders: %s", logonUser->reminders);
+				printf("\nVital Signs: %s", logonUser->vitalSigns);
+				printf("\nSmoking Status: %s", logonUser->smokingStatus);
+				printf("\nPatient History: %s", logonUser->fastPatHist);
+				printf("\nMedications on Order: %s", logonUser->ePrescription);
+				printf("\nActive Medications: %s", logonUser->activeMedList);
+				printf("\nMedicinal Allergies: %s", logonUser->medAllergyList);
+				printf("\nDrug Interactions: %s\n", logonUser->drugInteraction);
+				break;
+			case 2 :
+				loopBreakOne = true;
+         			break;
+      			default:
+         			printf("Invalid Option, try again.\n" );
+				break;
+   		}
+		if(loopBreakOne == true){
+		break;
+		}
 	}
+}
+
+/*Initialises a new patient structure for writing to a file. Only accessible from the admin role.*/
+void createNewPatient(void){		
+	patientRecord writeUserStruct;
+	patientRecord *writeUser = &writeUserStruct;
 	memset(writeUser, 0, sizeof(patientRecord));
-	
-	patientRecord* tempUserOne = (patientRecord*)malloc(sizeof(patientRecord));
-	if(tempUserOne == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
-	}
-	memset(writeUser, 0, sizeof(patientRecord));
-	
+	patientRecord tempUserOneStruct;
+	patientRecord *tempUserOne = &tempUserOneStruct;
+	memset(tempUserOne, 0, sizeof(patientRecord));
 	while(true){
 		userFillNew(writeUser, sizeof(writeUser->name));
-		do{
-			fReader(tempUserOne, patientFile);
-		}while(tempUserOne->patientID != writeUser->patientID && !feof(patientFile));
+		roleChoice(writeUser->patientID, tempUserOne);
 		if(writeUser->patientID == tempUserOne->patientID){
 			printf("That user already exists, try again.\n");
 		}else if (tempUserOne->deleted == true){
@@ -323,34 +429,43 @@ void createNewPatient(void){
 			break;
 		}
 	}
+      	privilegeEscalate();
+	FILE *patientFile;
+	if((patientFile = fopen("patients.bin", "a+b")) == NULL){
+		printf("File not found, exiting.");
+		exit(1);
+	}
 	fWriter(writeUser, patientFile);
 	fclose(patientFile);
-	free(writeUser);
+	deEscalatePrivilege();
 }
 
+/*Takes the ID of the user desired for look and populates a temporary struct with that data so that work
+may be done upon it.*/
 void fileRead(patientRecord *patientLookUp, size_t len){
 	char* tempUserID = (char*)malloc(sizeof(char) * 100);
 	if(tempUserID == NULL){
 		printf("Unable to allocate memory.");
 		exit(1);
 	}
-	memset(tempUserID, 0, sizeof(char));
+	memset(tempUserID, 0, sizeof(char)*100);
 	int tempID;
 	char *ptr; 
 	int readBool = true;
-	printf("Enter the ID of the user you wish to lookup.");
 	while(readBool){
-		if(fgets(tempUserID, len, stdin) == NULL){
-			printf("\nError, userID operation not done, try again.");		
-		}else if (ERANGE == errno) {
-	  		if(puts("Number out of range, try again.\n") == EOF) {
-					 
-	  		}
+		printf("\nEnter the ID of the user you wish to lookup:");
+		if(fgets(tempUserID, 7, stdin) == NULL){
+			printf("\nError, userID operation not done, try again.");
+			memset(tempUserID, 0, sizeof(char)*100);		
+		}else if (digitOrNot(tempUserID) == -1) {
+	  		printf("\nNumber out of range, try again.\n");
+	  		memset(tempUserID, 0, sizeof(char)*100);
 		}else{
 			tempID = strtol(tempUserID,&ptr,10);
 			readBool = false;
 		}
 	}
+      	privilegeEscalate();
 	FILE *patientFile;
 	if((patientFile = fopen("patients.bin", "rb")) == NULL){
 		printf("File not found, exiting.");
@@ -366,34 +481,40 @@ void fileRead(patientRecord *patientLookUp, size_t len){
 		printf("That user was deleted.");
 	}
 	fclose(patientFile);
+	deEscalatePrivilege();
 	free(tempUserID);
 }
 
+/*searches for the user that needs to be updated and overwrites the struct in the file.*/
 void fileWrite(patientRecord *writeUser){
+	
 	FILE *patientFile;
-	patientRecord* tempPatient = (patientRecord*)malloc(sizeof(patientRecord));
-	if(tempPatient == NULL){
-		printf("Unable to allocate memory.");
-		exit(1);
-	}
-	memset(tempPatient, 0, sizeof(patientRecord));
+	patientRecord tempPatient;
+	patientRecord* tempPatientPtr = &tempPatient;
+	memset(tempPatientPtr, 0, sizeof(patientRecord));
+	privilegeEscalate();
 	if((patientFile = fopen("patients.bin", "rb+")) == NULL){
 		printf("File not found, exiting.");
 		exit(1);
 	}
-	while(tempPatient->patientID != writeUser->patientID){
-		fReader(tempPatient, patientFile);
+	while(tempPatientPtr->patientID != writeUser->patientID){
+		fReader(tempPatientPtr, patientFile);
 	}
-	if(writeUser->patientID == tempPatient->patientID){	
+	if(writeUser->patientID == tempPatientPtr->patientID){	
+		if(fseek(patientFile, -1424, SEEK_CUR)== -1){
+			printf("Seek operation failed.");
+			exit(1);		
+		}
 		fWriter(writeUser, patientFile);
 	}else{
 		printf("Read/Write Failure.");
 		exit(1);
-		}		
+	}		
 	fclose(patientFile);
-	free(tempPatient);
+	deEscalatePrivilege();
 }
 
+/*Populates a new struct with initial values.*/ 
 void userFillNew(patientRecord *writeUser, size_t len){
 	char* tempUserID = (char*)malloc(sizeof(char) * 100);
 	if(tempUserID == NULL){
@@ -401,12 +522,12 @@ void userFillNew(patientRecord *writeUser, size_t len){
 		exit(1);
 	}
 	memset(tempUserID, 0, sizeof(char));
-	//int tempID;
 	char *ptr; 
 	int boolUserNew = true;
-	char natta[] = "n/a";
+	const char natta[] = "n/a";
 	while(boolUserNew){
 		printf("Enter the users name.");
+		memset(writeUser->name, 0, strlen(writeUser->name) * sizeof(char));
 		if(fgets(writeUser->name, sizeof(writeUser->name),stdin) == NULL){
 			printf("Inproper input for name, try again.");		
 		}else{
@@ -414,7 +535,7 @@ void userFillNew(patientRecord *writeUser, size_t len){
 		}
 	
 		printf("Enter the users ID.");
-		if(fgets(tempUserID, len, stdin) == NULL){
+		if(fgets(tempUserID, 7, stdin) == NULL){
 			printf("\nError, userID operation not done");		
 		}else if (ERANGE == errno) {
 	  		if(puts("Number out of range, try again.\n") == EOF) {
@@ -425,13 +546,14 @@ void userFillNew(patientRecord *writeUser, size_t len){
 			boolUserNew = false;
 		}
 		printf("Enter the users password.");
+		memset(writeUser->password, 0, strlen(writeUser->password) * sizeof(char));
 		if(fgets(writeUser->password, sizeof(writeUser->password),stdin) == NULL){
 			printf("Inproper input for password, try again.");		
 		}else{
 			boolUserNew = false;
 		}
 		printf("Enter the users role.");
-		if(fgets(tempUserID, len, stdin) == NULL){
+		if(fgets(tempUserID, 7, stdin) == NULL){
 			printf("\nError, userID operation not done");		
 		}else if (ERANGE == errno) {
 	  		if(puts("Number out of range, try again.\n") == EOF) {
@@ -442,169 +564,40 @@ void userFillNew(patientRecord *writeUser, size_t len){
 			boolUserNew = false;
 		}
 	}
-	strncpy(writeUser->address, natta, sizeof(natta));
-	strncpy(writeUser->drugInteraction, natta, sizeof(natta));
-	strncpy(writeUser->fastPatHist, natta, sizeof(natta));
-	strncpy(writeUser->ePrescription, natta, sizeof(natta));
-	strncpy(writeUser->activeMedList, natta, sizeof(natta));
-	strncpy(writeUser->medAllergyList, natta, sizeof(natta));
-	strncpy(writeUser->sex, natta, sizeof(natta));
-	strncpy(writeUser->insurance, natta, sizeof(natta));
-	strncpy(writeUser->vitalSigns, natta, sizeof(natta));
-	strncpy(writeUser->smokingStatus, natta, sizeof(natta));
-	strncpy(writeUser->birthDate, natta, sizeof(natta));
-	writeUser->deleted = false;	
+	strncpy(writeUser->address, natta, sizeof(prec));
+	strncpy(writeUser->drugInteraction, natta, sizeof(prec));
+	strncpy(writeUser->fastPatHist, natta, sizeof(prec));
+	strncpy(writeUser->ePrescription, natta, sizeof(prec));
+	strncpy(writeUser->activeMedList, natta, sizeof(prec));
+	strncpy(writeUser->medAllergyList, natta, sizeof(prec));
+	strncpy(writeUser->sex, natta, sizeof(prec));
+	strncpy(writeUser->insurance, natta, sizeof(prec));
+	strncpy(writeUser->vitalSigns, natta, sizeof(prec));
+	strncpy(writeUser->smokingStatus, natta, sizeof(prec));
+	strncpy(writeUser->birthDate, natta, sizeof(prec));
+	strncpy(writeUser->reminders, natta, sizeof(prec));
+	writeUser->deleted = false;
+	free(tempUserID);	
 }
 
+/*The actual read of a struct.*/
 void fReader(patientRecord *readUser, FILE *patientFile){
-	if(fread(&readUser->name,sizeof(readUser->name), 1, patientFile) == false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}	
-	if(fread(&readUser->patientID,sizeof(readUser->patientID), 1, patientFile) == false){
+	if(fread((char*)readUser,sizeof(*readUser), 1, patientFile)== false){
 		if(!feof(patientFile)){
 			printf("Read failed.");
 		}
 	}
-	if(fread(&readUser->password,sizeof(readUser->password), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->role,sizeof(readUser->role), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->deleted,sizeof(readUser->deleted), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->CPOE,sizeof(readUser->CPOE), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->address,sizeof(readUser->address), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->drugInteraction,sizeof(readUser->drugInteraction), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->fastPatHist,sizeof(readUser->fastPatHist), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->ePrescription,sizeof(readUser->ePrescription), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->activeMedList,sizeof(readUser->activeMedList), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->medAllergyList,sizeof(readUser->medAllergyList), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->sex,sizeof(readUser->sex), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->insurance,sizeof(readUser->insurance), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->vitalSigns,sizeof(readUser->vitalSigns), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->smokingStatus,sizeof(readUser->smokingStatus), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->birthDate,sizeof(readUser->birthDate), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
-	if(fread(&readUser->deleted,sizeof(readUser->deleted), 1, patientFile)== false){
-		if(!feof(patientFile)){
-			printf("Read failed.");
-		}
-	}
+	
 }
-void fWriter(patientRecord *writeUser, FILE *patientFile){
-	if(fwrite(&writeUser->name,sizeof(writeUser->name), 1, patientFile) == false){
-		printf("Write failed.");
-	}	
-	if(fwrite(&writeUser->patientID,sizeof(writeUser->patientID), 1, patientFile) == false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->password,sizeof(writeUser->password), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->role,sizeof(writeUser->role), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->deleted,sizeof(writeUser->deleted), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->CPOE,sizeof(writeUser->CPOE), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->address,sizeof(writeUser->address), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->drugInteraction,sizeof(writeUser->drugInteraction), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->fastPatHist,sizeof(writeUser->fastPatHist), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->ePrescription,sizeof(writeUser->ePrescription), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->activeMedList,sizeof(writeUser->activeMedList), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->medAllergyList,sizeof(writeUser->medAllergyList), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->sex,sizeof(writeUser->sex), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->insurance,sizeof(writeUser->insurance), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->vitalSigns,sizeof(writeUser->vitalSigns), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->smokingStatus,sizeof(writeUser->smokingStatus), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->birthDate,sizeof(writeUser->birthDate), 1, patientFile)== false){
-		printf("Write failed.");
-	}
-	if(fwrite(&writeUser->deleted,sizeof(writeUser->deleted), 1, patientFile)== false){
+
+/*The actual write of a struct.*/
+void fWriter(patientRecord *writeUser, FILE *patientFile){	
+	if(fwrite((char*)writeUser,sizeof(*writeUser), 1, patientFile)== false){
 		printf("Write failed.");
 	}
 }
 
+/*Checks the input for percents.*/
 int inputValidation(int userID, char* myString){
     	for(size_t i = 0; myString[i] != '\0'; ++i) {
         	if(('%' == myString[i]) ){
@@ -616,25 +609,58 @@ int inputValidation(int userID, char* myString){
 	return 0;
 }
 
-void roleChoice(int userID, patientRecord* patientLookUp)
+/*A function that fetches a particular users data for use in determining the role of the user.*/
+void roleChoice(int userID, patientRecord* checkUser)
 {
+      	privilegeEscalate();
 	FILE *patientFile;
 	if((patientFile = fopen("patients.bin", "rb")) == NULL){
 		printf("File not found, exiting.");
 		exit(1);
 	}
 	do{
-		fReader(patientLookUp, patientFile);
-	}while(patientLookUp->patientID != userID && !feof(patientFile));
-	if(feof(patientFile)){
-		printf("End of file reached, user not found.");
-		patientLookUp->patientID = -1;
-		fclose(patientFile);
-	}else if (patientLookUp->deleted == true){
-		printf("That user was deleted.");
-		patientLookUp->patientID = -2;
-		fclose(patientFile);
-	}else{
-		fclose(patientFile);
+		if(feof(patientFile)){
+			printf("End of file reached, user not found.");
+			checkUser->patientID = -1;
+		}else if (checkUser->deleted == true){
+			printf("That user was deleted.");
+			checkUser->patientID = -2;
+		}else{
+			fReader(checkUser, patientFile);
+		}
+	}while(checkUser->patientID != userID && !feof(patientFile) && checkUser->deleted != true);
+	fclose(patientFile);
+	deEscalatePrivilege();
+}
+
+/*Escalates the privileges of the program to root.*/
+void privilegeEscalate(void){
+	
+	if(seteuid(0) == -1)
+	{
+		printf("Error, permission denied.");
+		exit(1);
 	}
+
+}
+
+/*De-escalates the privileges of the program to normal user rights.*/
+void deEscalatePrivilege(void){
+	
+	if(seteuid(1000) == -1)
+	{
+		printf("Error, permission denied.");
+		exit(1);
+	}
+
+}
+
+/*Checks if string has a digit or not.*/
+int digitOrNot(char *myString){
+	for(size_t i = 0; i < strlen(myString); i++){
+		if(!isdigit(myString[i]) && myString[i] != '\n' && myString[i] != '\0'){
+			return -1;
+		}
+	}
+	return 0;
 }

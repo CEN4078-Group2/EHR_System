@@ -12,7 +12,7 @@
 #
 # for C++ define  CC = g++
 CC = gcc
-CFLAGS  = -g -Wall -std=c99
+CFLAGS  = -g -Wall -std=c99 -D_GNU_SOURCE
 
 # typing 'make' will invoke the first target entry in the file 
 # (in this case the default target entry)

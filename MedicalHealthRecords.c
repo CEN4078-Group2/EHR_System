@@ -19,7 +19,11 @@ int main(void){
 	}
 	const size_t fileSize = ftell(patientFile);
 	fclose(patientFile);
+	
 	deEscalatePrivilege();
+
+	
+	
 	char* tempUserID = (char*)malloc(sizeof(char) * 100);
 	if(tempUserID == NULL){
 		printf("Unable to allocate memory.");
@@ -85,9 +89,15 @@ int main(void){
 			}
 		}else if(selectChoice == 2){
 			printf("Goodbye!");
-			exit(0);
+			break;
 		}else{
 			printf("Inproper input, try again.");
 		}	
-	}	
+	}
+	free(tempUserPassword);	
+	tempUserPassword = NULL;
+	free(tempChoice);
+	tempChoice = NULL;
+	free(tempUserID);
+	tempUserID = NULL;
 }

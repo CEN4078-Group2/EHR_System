@@ -1,0 +1,65 @@
+This program must be run with sudo, this ensures that the file is locked to 
+typical users without root privileges. If populating a file from scratch, 
+the program will check if a file exists, if it doesn't then it will create it. 
+Furthermore, the program will check to see if the file is empty, if so, it 
+will directly take the prompt to the admin role to fill in at least one user.  
+Also the program will display "Press Enter To Continue." and wait for the user 
+to push enter after every input that requires an integer input. This is by
+design to clear the buffer of any data that may affect the logical flow of the 
+program.
+
+
+The user data filled in the file provided is as follows:
+
+USER ONE:
+Name: David Greely
+UserID: 3542
+Password:DaxFoyer512!@
+Role: 1 (Administrator) 
+
+USER TWO:
+Name: Cooper Mcnight
+UserID: 7634
+Password:HeapTrussel1024&!
+Role: 2 (Doctor) 
+
+USER THREE:
+Name: Stacy Woods
+UserID: 8532
+Password:HelloKitty256@*
+Role: 3 (Nurse)
+
+USER FOUR:
+Name: John Doe
+UserID: 2365
+Password:WhoAmI2048$#
+Role: 4 (Patient)
+
+John Does medical information as displayed from the program:
+
+Name: John Doe
+
+Patient ID: 2365
+DOB: 02/20/82
+
+Address: 2573 W Fakelane Dr. Navarre FL, 32566
+
+Insurance: Blue Cross Blue Shield
+
+Sex: Male
+
+Reminders: Appointment on 09/20/16 0900:AM
+
+Vital Signs: HR = 65, BP = 110/65, HT = 66", WT = 150lbs
+
+Smoking Status: Patient has been smoking since 13 years of age.
+
+Patient History: Patient has history of HIV in remission with Combivir.
+
+Medications on Order: Combivir (LAMIVUDINE 150mg + ZIDOVUDINE 300mg) Film Coated
+
+Active Medications: Combivir prescribed:03/25/16
+
+Medicinal Allergies: Aspirin
+
+Drug Interactions: None
